@@ -8,6 +8,7 @@ import {
 
 import { Navbar } from './app/Navbar';
 import PostList from './features/posts/PostsList';
+import AddPostForm from './features/posts/AddPostForm';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
             path="/"
             render={() => (
               <>
+                <AddPostForm />
                 <PostList />
               </>
             )}
