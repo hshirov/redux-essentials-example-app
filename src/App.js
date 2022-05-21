@@ -1,14 +1,15 @@
-import React from 'react'
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-} from 'react-router-dom'
+} from 'react-router-dom';
 
-import { Navbar } from './app/Navbar'
+import { Navbar } from './app/Navbar';
+import PostList from './features/posts/PostsList';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Navbar />
@@ -18,9 +19,9 @@ function App() {
             exact
             path="/"
             render={() => (
-              <section>
-                <h2>Welcome to the Redux Essentials example app!</h2>
-              </section>
+              <>
+                <PostList />
+              </>
             )}
           />
           <Redirect to="/" />
@@ -28,6 +29,6 @@ function App() {
       </div>
     </Router>
   )
-}
+};
 
-export default App
+export default App;
