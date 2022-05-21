@@ -1,32 +1,43 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { postAdded } from './postsSlice';
-import { nanoid } from '@reduxjs/toolkit';
+import { useSelector, useDispatch } from 'react-redux';
+import { postUpdated } from './postsSlice';
+import { useHistory } from 'react-router-dom';
 
-const AddPostForm = () => {
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+const EditPostForm = ({ match }) => {
+    const { postId } = match.params;
+    const post = useSelector(state =>
+        state.posts.find(post => post.id === postId)
+    );
+
+    const [title, setTitle] = useState(post.title);
+    const [content, setContent] = useState(post.content);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const onTitleChanged = e => setTitle(e.target.value);
     const onContentChanged = e => setContent(e.target.value);
-
     const onSave = () => {
         if (title && content) {
-            dispatch(postAdded({
-                id: nanoid(),
+            dispatch(postUpdated({
+                id: postId,
                 title,
                 content
-            }));
-
-            setTitle('');
-            setContent('');
+            }));          
+            history.push('/');
         }
+    }
+
+    if (!post) {
+        return (
+            <section>
+                <h2>Post not found!</h2>
+            </section>
+        );
     }
 
     return (
         <section>
-            <h2>Add a New Post</h2>
+            <h2>Edit a Post</h2>
             <form>
                 <label htmlFor="postTitle">Post Title:</label>
                 <input
@@ -44,11 +55,11 @@ const AddPostForm = () => {
                     onChange={onContentChanged}
                 />
                 <button type="button" onClick={onSave}>
-                    Save Post
+                    Edit Post
                 </button>
             </form>
         </section>
     );
 };
 
-export default AddPostForm;
+export default EditPostForm;
