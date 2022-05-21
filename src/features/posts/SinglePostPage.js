@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PostAuthor from './PostAuthor';
 
 const SinglePostPage = ({ match }) => {
     const { postId } = match.params;
@@ -20,6 +21,7 @@ const SinglePostPage = ({ match }) => {
         <section>
             <article className='post'>
                 <h2>{post.title}</h2>
+                <PostAuthor userId={post.user} />
                 <p className='post-content'>{post.content}</p>
                 <Link to={`/posts/edit/${post.id}`} className='button'>
                     Edit Post
