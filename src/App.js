@@ -9,6 +9,7 @@ import {
 import { Navbar } from './app/Navbar';
 import PostList from './features/posts/PostsList';
 import AddPostForm from './features/posts/AddPostForm';
+import SinglePostPage from './features/posts/SinglePostPage';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
               </>
             )}
           />
+          <Route exact path='/posts/:postId' component={SinglePostPage} />
           <Redirect to="/" />
         </Switch>
       </div>
