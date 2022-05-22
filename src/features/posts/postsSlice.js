@@ -1,18 +1,28 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
 import { sub } from 'date-fns';
 
+const initialReactions = {
+    thumbsUp: 0,
+    hooray: 0,
+    heart: 0,
+    rocket: 0,
+    eyes: 0
+};
+
 const initialState = [
     {
         id: '1',
         title: 'First Post',
         content: 'Hello',
-        date: sub(new Date(), { minutes: 10 }).toISOString()
+        date: sub(new Date(), { minutes: 10 }).toISOString(),
+        reactions: initialReactions
     },
     {
         id: '2',
         title: 'Second Post',
         content: 'Hello2',
-        date: sub(new Date(), { minutes: 5 }).toISOString()
+        date: sub(new Date(), { minutes: 5 }).toISOString(),
+        reactions: initialReactions
     }
 ];
 
@@ -31,9 +41,10 @@ const postsSlice = createSlice({
                         date: new Date().toISOString(),
                         title,
                         content,
-                        user: userId
+                        user: userId,
+                        reactions: initialReactions
                     }
-                }
+                };
             }
         },
         postUpdated(state, action) {
@@ -44,10 +55,28 @@ const postsSlice = createSlice({
                 post.title = title;
                 post.content = content;
             }
-        }
+        },
+        reactionAdded: {
+            reducer(state, action) {
+                const { postId, reaction } = action.payload;
+                const post = state.find(state => state.id === postId);
+    
+                if (post && reaction) {
+                    post.reactions[reaction]++;
+                }
+            },
+            prepare(postId, reaction) {
+                return {
+                    payload: {
+                        postId,
+                        reaction
+                    }
+                };
+            }
+        },
     }
 });
 
-export const { postAdded, postUpdated } = postsSlice.actions;
+export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
 
 export default postsSlice.reducer;
