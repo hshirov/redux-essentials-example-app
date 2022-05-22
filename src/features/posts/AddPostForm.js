@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { postAdded } from './postsSlice';
+import { addNewPost } from './postsSlice';
 import { selectAllUsers } from '../users/usersSlice';
 
 const AddPostForm = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [userId, setUserId] = useState('');
+    const [addRequestStatus, setAddRequestStatus] = useState('idle');
 
     const dispatch = useDispatch();
 
@@ -16,13 +17,21 @@ const AddPostForm = () => {
     const onContentChanged = e => setContent(e.target.value);
     const onAuthorChanged = e => setUserId(e.target.value);
 
-    const canSave = title && content && userId;
+    const canSave = [title, content, userId].every(Boolean) && addRequestStatus === 'idle';
 
-    const onSave = () => {
+    const onSave = async () => {
         if (canSave) {
-            dispatch(postAdded(title, content, userId));
-            setTitle('');
-            setContent('');
+            try {
+                setAddRequestStatus('pending');
+                await dispatch(addNewPost({ title, content, user: userId })).unwrap();
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setTitle('');
+                setContent('');
+                setUserId('');
+                setAddRequestStatus('idle');
+            }
         }
     };
 

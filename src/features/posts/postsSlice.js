@@ -77,6 +77,10 @@ const postsSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message;
             });
+
+        builder.addCase(addNewPost.fulfilled, (state, action) => {
+           state.posts.push(action.payload); 
+        });
     }
 });
 
@@ -84,6 +88,14 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     const response = await client.get('/fakeApi/posts');
     return response.data;
 });
+
+export const addNewPost = createAsyncThunk(
+    'posts/addNewPost',
+    async initialPost => {
+        const response = await client.post('/fakeApi/posts', initialPost);
+        return response.data;
+    }
+);
 
 export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
 
