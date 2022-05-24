@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from "react-router-dom";
 import PostAuthor from "./PostAuthor";
 import ReactionButtons from "./ReactionButtons";
@@ -18,4 +19,4 @@ const PostExcerpt = ({ post }) => {
     );
 };
 
-export default PostExcerpt;
+export default React.memo(PostExcerpt);
