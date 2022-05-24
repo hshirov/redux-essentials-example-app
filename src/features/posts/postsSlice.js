@@ -1,19 +1,10 @@
 import { 
     createSlice,
-    nanoid, 
     createAsyncThunk,
     createSelector,
     createEntityAdapter
 } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
-
-const initialReactions = {
-    thumbsUp: 0,
-    hooray: 0,
-    heart: 0,
-    rocket: 0,
-    eyes: 0
-};
 
 const postsAdapter = createEntityAdapter({
     sortComparer: (a, b) => b.date.localeCompare(a.date)
@@ -28,23 +19,6 @@ const postsSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        postAdded: {
-            reducer(state, action) {
-                state.posts.push(action.payload);
-            },
-            prepare(title, content, userId) {
-                return {
-                    payload: {
-                        id: nanoid(),
-                        date: new Date().toISOString(),
-                        title,
-                        content,
-                        user: userId,
-                        reactions: initialReactions
-                    }
-                };
-            }
-        },
         postUpdated(state, action) {
             const { id, title, content } = action.payload;
             const post = state.entities[id];
@@ -104,7 +78,7 @@ export const addNewPost = createAsyncThunk(
     }
 );
 
-export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
+export const { postUpdated, reactionAdded } = postsSlice.actions;
 
 export default postsSlice.reducer;
 
