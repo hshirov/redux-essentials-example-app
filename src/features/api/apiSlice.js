@@ -3,9 +3,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: '/fakeApi' }),
+    tagTypes: ['Post'],
     endpoints: builder => ({
         getPosts: builder.query({
-            query: () => '/posts'
+            query: () => '/posts',
+            providesTags: ['Post']
         }),
         getPost: builder.query({
             query: postId => `/posts/${postId}`
@@ -15,7 +17,8 @@ export const apiSlice = createApi({
                 url: '/posts',
                 method: 'POST',
                 body: initialPost
-            })
+            }),
+            invalidatesTags: ['Post']
         })
     })
 });
