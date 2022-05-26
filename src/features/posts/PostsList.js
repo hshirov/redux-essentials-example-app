@@ -1,27 +1,30 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchPosts, selectPostIds } from './postsSlice';
+import { useMemo } from 'react';
 import PostExcerpt from './PostExcerpt';
 import { Spinner } from '../../components/Spinner';
+import { useGetPostsQuery } from '../api/apiSlice';
 
 const PostsList = () => {
-    const dispatch = useDispatch();
-    const postStatus = useSelector(state => state.posts.status);
-    const error = useSelector(state => state.posts.error);
-    
-    const orderedPostsIds = useSelector(selectPostIds);
+    const {
+        data: posts = [],
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetPostsQuery();
 
-    useEffect(() => {
-        if (postStatus === 'idle') {
-            dispatch(fetchPosts());
-        }
-    }, [postStatus, dispatch])
+    const sortedPosts = useMemo(() => {
+        const sortedPosts = posts.slice();
+        sortedPosts.sort((a, b) => b.date.localeCompare(a.date));
+        return sortedPosts;
+    }, [posts]);
 
-    const content = postStatus === 'loading'
+    const content = isLoading
         ? <Spinner text='Loading...' />
-        : postStatus === 'failed'
-            ? <div>{error}</div>
-            : orderedPostsIds.map(postId => <PostExcerpt postId={postId} key={postId} />);
+        : isError
+            ? <div>{error.toString()}</div>
+            : isSuccess
+                ? sortedPosts.map(post => <PostExcerpt post={post} key={post.id} />)
+                : null;
             
     return (
         <section className='posts-list'>

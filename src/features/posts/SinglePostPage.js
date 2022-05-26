@@ -1,25 +1,20 @@
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PostAuthor from './PostAuthor';
 import ReactionButtons from './ReactionButtons';
 import TimeAgo from './TimeAgo';
-import { selectPostById } from './postsSlice';
+import { Spinner } from '../../components/Spinner';
+import { useGetPostQuery } from '../api/apiSlice';
 
 const SinglePostPage = ({ match }) => {
     const { postId } = match.params;
 
-    const post = useSelector(state => selectPostById(state, postId));
+    const { data: post, isFetching, isSuccess } = useGetPostQuery(postId);
     
-    if (!post) {
-        return (
-            <section>
-                <h2>Post not found!</h2>
-            </section>
-        );
-    }
-
-    return (
-        <section>
+    let content;
+    if (isFetching) {
+        content = <Spinner text='Loading...' />;
+    } else if (isSuccess) {
+        content = (
             <article className='post'>
                 <h2>{post.title}</h2>
                 <PostAuthor userId={post.user} />
@@ -30,8 +25,10 @@ const SinglePostPage = ({ match }) => {
                 </Link>
                 <ReactionButtons post={post}/>
             </article>
-        </section>
-    );
+        );
+    }
+
+    return <section>{content}</section>
 };
 
 export default SinglePostPage;
